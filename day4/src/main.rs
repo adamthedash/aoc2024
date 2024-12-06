@@ -68,7 +68,7 @@ fn test_kernel(grid: &[&[char]], kernel: &[Vec<Option<char>>]) -> bool {
         // Loop over the grid & kernel in pairs
         .flat_map(|row| row.iter())
         .zip(kernel.iter().flatten())
-        // Compare the chars, None in the kernel counts as a regex
+        // Compare the chars, None in the kernel counts as a wildcard
         .all(|(test_letter, pattern_letter)| {
             pattern_letter.map(|p| *test_letter == p).unwrap_or(true)
         })
@@ -91,18 +91,20 @@ fn kernel_regex(grid: &[&[char]], kernel: &[Vec<Option<char>>]) -> usize {
 }
 
 fn part2() {
+    // Grab the input grid
     let grid = std::io::stdin()
         .lines()
         .map(|l| l.unwrap().chars().collect::<Vec<_>>())
         .collect::<Vec<_>>();
 
+    // Kernel used to match against. None counts as a wildcard
     let kernel = vec![
         vec![Some('M'), None, Some('S')],
         vec![None, Some('A'), None],
         vec![Some('M'), None, Some('S')],
     ];
 
-    let counts = (0..grid.len() - kernel.len() + 1)
+    let total_matches = (0..grid.len() - kernel.len() + 1)
         // Generate (y, x) coordinates
         .flat_map(|i| {
             (0..grid[0].len() - kernel[0].len() + 1)
@@ -121,7 +123,7 @@ fn part2() {
         // Add em up
         .sum::<usize>();
 
-    println!("Total matches: {}", counts);
+    println!("Total matches: {}", total_matches);
 }
 
 fn main() {
